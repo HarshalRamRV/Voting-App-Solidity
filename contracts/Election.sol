@@ -50,3 +50,7 @@ contract Election  {
     
     // Read Candidate
 }
+
+
+// NOTE: Remember all code on our blockchain is immutable, so if our contracts has some bugs, we must deploy new copy of it.
+//The new copy wont have the same state as our old contract and it won't have the same address. The only thing we can do is disable old contract
