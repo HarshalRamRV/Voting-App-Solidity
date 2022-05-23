@@ -10,6 +10,7 @@ const App = () => {
   const [candidatesCount, setCandidatesCount] = useState(0);
   const [candidatesList, setCandidatesList] = useState([]);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
+  const [showForm, setShowForm] = useState(false);
   // const [candidateResults, setCandidateResults] = useState();
   const [loading, setLoading] = useState();
   const [balance, setBalance] = useState(0);
@@ -21,7 +22,7 @@ const App = () => {
   console.log("candidatesList: ", candidatesList);
   // // console.log("candidateResults", candidateResults);
   console.log("selectedCandidate", selectedCandidate);
-  // console.log("balance", balance);
+  console.log("balance", balance);
   // console.log("web3", web3);
   // console.log("electionContract", electionContract);
 
@@ -92,16 +93,12 @@ const App = () => {
     }
   }
 
-  useEffect(() => {
-    console.log("inside useEFfect:::::");
-    loadBlockchainData();
-    if(candidatesCount > 0){
-      getCandidatesList();
-    }
-  },[candidatesCount]);
-
-  const castVote = () => {
-    console.log("Vote Casted: ");
+  const castVote = async() => {
+    console.log("Vote Casted: ", selectedCandidate, accountAddress);
+    setLoading(true);
+    await electionContract.methods.vote(selectedCandidate).send({ from : accountAddress });
+    setLoading(false);
+    setShowForm(false);
   }
 
   const selectCandidate = (e) => {
@@ -110,14 +107,37 @@ const App = () => {
     setSelectedCandidate(e.target.id);
   }
 
+  const checkVoted = async() => {
+      const check = await electionContract.methods.voters(accountAddress).call();
+      console.log("Check in checkVoted: ", check);
+      if(check){
+        setShowForm(false);
+      }else{
+        setShowForm(true);
+      }
+      return check;
+  }
+
+  useEffect(() => {
+    console.log("INSIDE USEEFFECT::::::::::::::::::::::::::::::::::::::::::");
+    loadBlockchainData();
+    if(electionContract && candidatesCount > 0){
+      console.log("Inside check for candidates count > 0 in useEffect")
+      getCandidatesList();
+      checkVoted();
+    }
+  },[candidatesCount]);
+
   return(
     <div className="container">
       <div className="row electionContainerRow">
           <div className="col-lg-12 electionContainerColumn">
-            <h1 className="electionResultsHeader">Election Results</h1>
-            {/* <div id="loader">
-              <p className="text-center">Loading...</p>
-            </div> */}
+            <h1 className="electionResultsHeader">Election Results</h1>       
+            {loading && 
+              <div id="loader">
+                <p className="text-center">Loading...</p>
+              </div>
+            }
             <div className="candidatesTableContainer">
               <Table bordered className="candidateListTable">
                 <thead>
@@ -140,26 +160,28 @@ const App = () => {
                 </tbody>
               </Table>
             </div>
-            <div className="formContainer">
-              <form onSubmit={ castVote }>
-                <div class="dropdown">
-                  <button class="btn btn-secondary dropdown-toggle" type="button" id="candidatesDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    Select Candidate
-                  </button>
-                  <ul class="dropdown-menu" aria-labelledby="candidatesDropdown">
-                    { candidatesList && candidatesList.map((candidate, index) => {
-                        return(
-                          /* eslint-disable jsx-a11y/anchor-is-valid */
-                          <li key={index}><a class="dropdown-item" href="#" onClick={(e) => selectCandidate(e)} id={index+1}>{candidate.candidateName}</a></li>
-                        )
-                    })}
-                  </ul>
-                </div>
-                <div className="castVoteButtonContainer">
-                  <button type="submit" className="btn btn-primary">Vote</button>
-                </div>             
-              </form>
-            </div>
+            { showForm &&
+              <div className="formContainer">
+                <form onSubmit={ castVote }>
+                  <div className="dropdown">
+                    <button className="btn btn-secondary dropdown-toggle" type="button" id="candidatesDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                      Select Candidate
+                    </button>
+                    <ul className="dropdown-menu" aria-labelledby="candidatesDropdown">
+                      { candidatesList && candidatesList.map((candidate, index) => {
+                          return(
+                            /* eslint-disable jsx-a11y/anchor-is-valid */
+                            <li key={index}><a className="dropdown-item" href="#" onClick={(e) => selectCandidate(e)} id={index+1}>{candidate.candidateName}</a></li>
+                          )
+                      })}
+                    </ul>
+                  </div>
+                  <div className="castVoteButtonContainer">
+                    <button type="submit" className="btn btn-primary">Vote</button>
+                  </div>             
+                </form>
+               </div>
+            }   
             <h3>Account Address:</h3>
             <p className="accountAddressClass">{ accountAddress }</p>
           </div>

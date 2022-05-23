@@ -52,6 +52,12 @@ contract Election  {
     }
 
     function vote(uint _candidateId) public {
+        // Check if the user haven't voted
+        require(!voters[msg.sender]);
+
+        // Check if voted for valid candidate
+        require(_candidateId > 0 && _candidateId <= candidatesCount);
+        
         // Record the voter has Voted
         voters[msg.sender] = true;
 
