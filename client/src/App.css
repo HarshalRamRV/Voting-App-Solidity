@@ -21,26 +21,45 @@
   color: #09d3ac;
 }
 
-.election-container{
+.castVoteButtonContainer{
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  flex-direction: column;
+  padding: 10px 5px;
 }
 
-.candidateListTable{
+.electionContainerRow{
   display: flex;
-  width: 100%;
-  justify-content: space-around;
+  justify-content: center;
+}
+
+.electionContainerColumn{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 500px;
+}
+
+.candidatesTableContainer{
+  display: flex;
+  width: 60%;
+  justify-content: center;
+  margin: 30px;
 }
 
 .candidateListTableRow{
   justify-content: space-around;
 }
 
-.candidateListTableHeader{
+.candidateListTable > thead > tr > th{
+  padding: 10px 16px;
+  text-align: center;
+}
 
+.candidateListTable > tbody > tr > td{
+  padding: 10px 16px;
+  text-align: center;
 }
 
 .accountAddressClass{
@@ -51,8 +70,9 @@
   font-weight: 600;
 }
 
-/* .text-center{
+.formContainer{
   display: flex;
   justify-content: center;
-  align-items: center;
-} */
+  flex-direction: row;
+  margin-bottom: 30px;
+}

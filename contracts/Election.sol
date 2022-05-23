@@ -28,6 +28,9 @@ contract Election  {
 
     // Store Candidate. No way to see size of mapping or iterate(loop) over in solidity.
     mapping(uint => Candidate) public candidates;
+
+    // Store accounts that have voted
+    mapping(address => bool) public voters;
     
     // Fetch Candidate
 
@@ -46,6 +49,14 @@ contract Election  {
         // When our is migrated and deployed, we call the list of candidates who will be standing in the election.
         addCandidate("Candidate 1");
         addCandidate("Candidate 2");
+    }
+
+    function vote(uint _candidateId) public {
+        // Record the voter has Voted
+        voters[msg.sender] = true;
+
+        // Update candidate vote count
+        candidates[_candidateId].voteCount ++;
     }
     
     // Read Candidate

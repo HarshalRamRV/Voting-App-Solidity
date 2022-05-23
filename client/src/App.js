@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import Table from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
 import Web3 from 'web3';
 import ElectionContract from "./contracts/Election.json";
-import getWeb3 from "./getWeb3";
 
 import "./App.css";
 
@@ -10,6 +9,7 @@ const App = () => {
   const [accountAddress, setAccountAddress] = useState("");
   const [candidatesCount, setCandidatesCount] = useState(0);
   const [candidatesList, setCandidatesList] = useState([]);
+  const [selectedCandidate, setSelectedCandidate] = useState(null);
   // const [candidateResults, setCandidateResults] = useState();
   const [loading, setLoading] = useState();
   const [balance, setBalance] = useState(0);
@@ -20,7 +20,7 @@ const App = () => {
   // console.log("CandidatesCount: ", candidatesCount);
   console.log("candidatesList: ", candidatesList);
   // // console.log("candidateResults", candidateResults);
-  // console.log("loading", loading);
+  console.log("selectedCandidate", selectedCandidate);
   // console.log("balance", balance);
   // console.log("web3", web3);
   // console.log("electionContract", electionContract);
@@ -101,19 +101,25 @@ const App = () => {
   },[candidatesCount]);
 
   const castVote = () => {
-    console.log("Vote Casted");
+    console.log("Vote Casted: ");
+  }
+
+  const selectCandidate = (e) => {
+    e.preventDefault();
+    console.log("CandidateSelected: ", e.target.id);
+    setSelectedCandidate(e.target.id);
   }
 
   return(
-    <div className="container-fluid ">
-      <div className="row">
-          <div className="col-lg-12 election-container">
-            <h1 className="text-center">Election Results</h1>
-            <div id="loader">
+    <div className="container">
+      <div className="row electionContainerRow">
+          <div className="col-lg-12 electionContainerColumn">
+            <h1 className="electionResultsHeader">Election Results</h1>
+            {/* <div id="loader">
               <p className="text-center">Loading...</p>
-            </div>
-            <div id="content">
-              <Table>
+            </div> */}
+            <div className="candidatesTableContainer">
+              <Table bordered className="candidateListTable">
                 <thead>
                   <tr>
                     <th>#</th>
@@ -122,30 +128,40 @@ const App = () => {
                   </tr>
                 </thead>
                 <tbody>
-                    
+                  { candidatesList && candidatesList.map((candidate, index) => {
+                      return(
+                        <tr key={index}>
+                          <td>{candidate.candidateId}</td>
+                          <td>{candidate.candidateName}</td>
+                          <td>{candidate.candidateVoteCount}</td>
+                        </tr>
+                      )
+                  })}
                 </tbody>
               </Table>
-              {/* <table className="table">
-                <thead className="candidateListTableHead">
-                  <tr className="candidateListTableRow">
-                    <th scope="col" className="candidateListTableHeader">#</th>
-                    <th scope="col" className="candidateListTableHeader">Name</th>
-                    <th scope="col" className="candidateListTableHeader">Votes</th>
-                  </tr>
-                </thead>
-                <tbody id="candidatesResults">
-                </tbody>
-              </table> */}
-              <form onSubmit={ castVote }>
-                <div className="form-group">
-                  <label htmlFor="candidatesSelect">Select Candidate</label>
-                  <select className="form-control" id="candidatesSelect">
-                  </select>
-                </div>
-                <button type="submit" className="btn btn-primary">Vote</button>
-              </form>
-              <p className="accountAddressClass">{ accountAddress }</p>
             </div>
+            <div className="formContainer">
+              <form onSubmit={ castVote }>
+                <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="candidatesDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    Select Candidate
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="candidatesDropdown">
+                    { candidatesList && candidatesList.map((candidate, index) => {
+                        return(
+                          /* eslint-disable jsx-a11y/anchor-is-valid */
+                          <li key={index}><a class="dropdown-item" href="#" onClick={(e) => selectCandidate(e)} id={index+1}>{candidate.candidateName}</a></li>
+                        )
+                    })}
+                  </ul>
+                </div>
+                <div className="castVoteButtonContainer">
+                  <button type="submit" className="btn btn-primary">Vote</button>
+                </div>             
+              </form>
+            </div>
+            <h3>Account Address:</h3>
+            <p className="accountAddressClass">{ accountAddress }</p>
           </div>
       </div>
     </div>
