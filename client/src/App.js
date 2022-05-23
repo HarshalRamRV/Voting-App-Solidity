@@ -1,73 +1,112 @@
-import React, { Component } from "react";
-import SimpleStorageContract from "./contracts/SimpleStorage.json";
+import React, { useState, useEffect } from "react";
+import Web3 from 'web3';
+import ElectionContract from "./contracts/Election.json";
 import getWeb3 from "./getWeb3";
 
 import "./App.css";
 
-class App extends Component {
-  state = { storageValue: 0, web3: null, accounts: null, contract: null };
+const App = () => {
+  const [accountAddress, setAccountAddress] = useState("");
+  const [candidatesCount, setCandidatesCount] = useState(0);
+  // const [candidateResults, setCandidateResults] = useState();
+  const [loading, setLoading] = useState();
+  const [balance, setBalance] = useState(0);
+  const [web3, setWeb3] = useState();
+  const [electionContract, setElectionContract] = useState(); 
 
-  componentDidMount = async () => {
-    try {
-      // Get network provider and web3 instance.
-      const web3 = await getWeb3();
+  console.log("accountAddress", accountAddress);
+  console.log("CandidatesCount: ", candidatesCount);
+  // // console.log("candidateResults", candidateResults);
+  // console.log("loading", loading);
+  // console.log("balance", balance);
+  // console.log("web3", web3);
+  // console.log("electionContract", electionContract);
 
-      // Use web3 to get the user's accounts.
+  const loadBlockchainData = async() => {
+    if(typeof window.ethereum !== 'undefined'){
+      const web3 = new Web3(window.ethereum);
+
+      window.ethereum.enable().catch(error => {
+        // User denied account access
+        console.log("ERROR: ", error);
+      });
+
+      const networkId = await web3.eth.net.getId();
+      console.log("NetworkId: ", networkId);
+
       const accounts = await web3.eth.getAccounts();
 
-      // Get the contract instance.
-      const networkId = await web3.eth.net.getId();
-      const deployedNetwork = SimpleStorageContract.networks[networkId];
-      const instance = new web3.eth.Contract(
-        SimpleStorageContract.abi,
-        deployedNetwork && deployedNetwork.address,
-      );
+      // Load Balance
+      if(typeof accounts[0] !== 'undefined'){
+        const balance = await web3.eth.getBalance(accounts[0]);
+        // this.setState({ account: accounts[0], balance, web3: web3});
+        setAccountAddress(accounts[0]);
+        setBalance(balance);
+        setWeb3(web3);
+      }else{
+        window.alert('Please Login with MetaMask');
+      } 
 
-      // Set web3, accounts, and contract to the state, and then proceed with an
-      // example of interacting with the contract's methods.
-      this.setState({ web3, accounts, contract: instance }, this.runExample);
-    } catch (error) {
-      // Catch any errors for any of the above operations.
-      alert(
-        `Failed to load web3, accounts, or contract. Check console for details.`,
-      );
-      console.error(error);
+      // LOAD CONTRACTS
+      try{
+        const Election = new web3.eth.Contract(ElectionContract.abi, ElectionContract.networks[networkId].address);
+        setElectionContract(Election);
+
+        const countElectionCandidates = await Election.methods.candidatesCount().call();
+
+        // Setting candidates count
+        setCandidatesCount(countElectionCandidates);
+
+
+      }catch(error){
+        console.log("ERROR encounterred while loading contracts", error);
+      }
     }
-  };
-
-  runExample = async () => {
-    const { accounts, contract } = this.state;
-
-    // Stores a given value, 5 by default.
-    await contract.methods.set(5).send({ from: accounts[0] });
-
-    // Get the value from the contract to prove it worked.
-    const response = await contract.methods.get().call();
-
-    // Update state with the result.
-    this.setState({ storageValue: response });
-  };
-
-  render() {
-    if (!this.state.web3) {
-      return <div>Loading Web3, accounts, and contract...</div>;
-    }
-    return (
-      <div className="App">
-        <h1>Good to Go!</h1>
-        <p>Your Truffle Box is installed and ready.</p>
-        <h2>Smart Contract Example</h2>
-        <p>
-          If your contracts compiled and migrated successfully, below will show
-          a stored value of 5 (by default).
-        </p>
-        <p>
-          Try changing the value stored on <strong>line 42</strong> of App.js.
-        </p>
-        <div>The stored value is: {this.state.storageValue}</div>
-      </div>
-    );
   }
+
+  useEffect(() => {
+    console.log("inside useEFfect:::::");
+    loadBlockchainData();
+  },[]);
+
+  const castVote = () => {
+    console.log("Vote Casted");
+  }
+
+  return(
+    <div className="container-fluid ">
+      <div className="row">
+          <div className="col-lg-12 election-container">
+            <h1 className="text-center">Election Results</h1>
+            <div id="loader">
+              <p className="text-center">Loading...</p>
+            </div>
+            <div id="content">
+              <table className="table">
+                <thead className="candidateListTableHead">
+                  <tr className="candidateListTableRow">
+                    <th scope="col" className="candidateListTableHeader">#</th>
+                    <th scope="col" className="candidateListTableHeader">Name</th>
+                    <th scope="col" className="candidateListTableHeader">Votes</th>
+                  </tr>
+                </thead>
+                <tbody id="candidatesResults">
+                </tbody>
+              </table>
+              <form onSubmit={ castVote }>
+                <div className="form-group">
+                  <label htmlFor="candidatesSelect">Select Candidate</label>
+                  <select className="form-control" id="candidatesSelect">
+                  </select>
+                </div>
+                <button type="submit" className="btn btn-primary">Vote</button>
+              </form>
+              <p className="accountAddressClass">{ accountAddress }</p>
+            </div>
+          </div>
+      </div>
+    </div>
+  );
 }
 
 export default App;
