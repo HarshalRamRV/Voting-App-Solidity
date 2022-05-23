@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Table from 'react-bootstrap';
 import Web3 from 'web3';
 import ElectionContract from "./contracts/Election.json";
 import getWeb3 from "./getWeb3";
@@ -8,14 +9,16 @@ import "./App.css";
 const App = () => {
   const [accountAddress, setAccountAddress] = useState("");
   const [candidatesCount, setCandidatesCount] = useState(0);
+  const [candidatesList, setCandidatesList] = useState([]);
   // const [candidateResults, setCandidateResults] = useState();
   const [loading, setLoading] = useState();
   const [balance, setBalance] = useState(0);
   const [web3, setWeb3] = useState();
   const [electionContract, setElectionContract] = useState(); 
 
-  console.log("accountAddress", accountAddress);
-  console.log("CandidatesCount: ", candidatesCount);
+  // console.log("accountAddress", accountAddress);
+  // console.log("CandidatesCount: ", candidatesCount);
+  console.log("candidatesList: ", candidatesList);
   // // console.log("candidateResults", candidateResults);
   // console.log("loading", loading);
   // console.log("balance", balance);
@@ -57,17 +60,45 @@ const App = () => {
         // Setting candidates count
         setCandidatesCount(countElectionCandidates);
 
-
       }catch(error){
         console.log("ERROR encounterred while loading contracts", error);
       }
     }
   }
 
+  const getCandidatesList = async() => {
+    for(let iterator = 1; iterator <= candidatesCount; iterator++){
+      const candidateInfo = await electionContract.methods.candidates(iterator).call();
+      console.log("candidateInfo:::", candidateInfo);
+      let candidateId = candidateInfo[0];
+      let candidateName = candidateInfo[1];
+      let candidateVoteCount = candidateInfo[2];
+
+      // Create a new candidate object to be pushed into candidatesList 
+      const candidateInfoObject = {
+        candidateId,
+        candidateName,
+        candidateVoteCount
+      }
+
+      // Copy current contents of candidatesList into candidatesArray
+      const candidatesArray = candidatesList;
+
+      // Push the created object `candidateInfoObject` into candidatesArray
+      candidatesArray.push(candidateInfoObject);
+
+      // Update the candidatesList
+      setCandidatesList(candidatesArray);
+    }
+  }
+
   useEffect(() => {
     console.log("inside useEFfect:::::");
     loadBlockchainData();
-  },[]);
+    if(candidatesCount > 0){
+      getCandidatesList();
+    }
+  },[candidatesCount]);
 
   const castVote = () => {
     console.log("Vote Casted");
@@ -82,7 +113,19 @@ const App = () => {
               <p className="text-center">Loading...</p>
             </div>
             <div id="content">
-              <table className="table">
+              <Table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Candidate Name</th>
+                    <th>Candidates Vote Count</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+              </Table>
+              {/* <table className="table">
                 <thead className="candidateListTableHead">
                   <tr className="candidateListTableRow">
                     <th scope="col" className="candidateListTableHeader">#</th>
@@ -92,7 +135,7 @@ const App = () => {
                 </thead>
                 <tbody id="candidatesResults">
                 </tbody>
-              </table>
+              </table> */}
               <form onSubmit={ castVote }>
                 <div className="form-group">
                   <label htmlFor="candidatesSelect">Select Candidate</label>
