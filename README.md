@@ -21,8 +21,8 @@
 ######  Select the candidate you wish to vote for, then click on vote button and confirm transaction(after verifying on metamask).
 ######  DONE. You have successfully voted.(Might need to refresh page to see changes as now. Thats a TODO) 
 
-##### NOTE:
+### NOTE:
 ######  This codebase follows the basis of tutorial 
 
 ######  How to Build Ethereum Dapp (Decentralized Application Development Tutorial) of Dapp university. 
-######  It updated using latest solidity and react versions
+######  Its updated using latest solidity and react versions on top of the tutorial.
