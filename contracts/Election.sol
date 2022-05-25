@@ -38,6 +38,9 @@ contract Election  {
     // Each time we insert a candidate in mapping, this counter is increased. Defaults to 0 if unassigned.
     uint public candidatesCount;
 
+    //Voted Event
+    event votedEvent (uint indexed _candidateId);
+
     // Add a new candidate
     function addCandidate(string memory _name) private {
         candidatesCount++;
@@ -63,6 +66,8 @@ contract Election  {
 
         // Update candidate vote count
         candidates[_candidateId].voteCount ++;
+
+        emit votedEvent(_candidateId);
     }
     
     // Read Candidate
