@@ -58,6 +58,8 @@ const App = () => {
 
         const countElectionCandidates = await Election.methods.candidatesCount().call();
 
+        // TODO: EVENT LISTENING for emitted events from Election
+
         // Setting candidates count
         setCandidatesCount(countElectionCandidates);
 
