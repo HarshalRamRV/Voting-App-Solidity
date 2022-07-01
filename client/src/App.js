@@ -6,6 +6,8 @@ import ElectionContract from "./contracts/Election.json";
 import "./App.css";
 
 const App = () => {
+  const [, updateState] = React.useState();
+  const forceUpdate = React.useCallback(() => updateState({}), []);
   const [accountAddress, setAccountAddress] = useState("");
   const [candidatesCount, setCandidatesCount] = useState(0);
   const [candidatesList, setCandidatesList] = useState([]);
@@ -167,7 +169,7 @@ const App = () => {
                 <form onSubmit={ castVote }>
                   <div className="dropdown">
                     <button className="btn btn-secondary dropdown-toggle" type="button" id="candidatesDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                      Select Candidate
+                      {selectedCandidate == null ?"Select Candidate": candidatesList[selectedCandidate-1].candidateName}
                     </button>
                     <ul className="dropdown-menu" aria-labelledby="candidatesDropdown">
                       { candidatesList && candidatesList.map((candidate, index) => {
@@ -179,12 +181,13 @@ const App = () => {
                     </ul>
                   </div>
                   <div className="castVoteButtonContainer">
-                    <button type="submit" className="btn btn-primary">Vote</button>
+                    <button onClick={forceUpdate} type="submit" className="btn btn-primary">Vote</button>
                   </div>             
                 </form>
                </div>
             }   
             <h3>Account Address:</h3>
+            
             <p className="accountAddressClass">{ accountAddress }</p>
           </div>
       </div>
