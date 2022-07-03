@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/Voting-App-Solidity/static/css/main.4ca1eb6d.chunk.css",
+    "main.js": "/Voting-App-Solidity/static/js/main.95880bf4.chunk.js",
+    "main.js.map": "/Voting-App-Solidity/static/js/main.95880bf4.chunk.js.map",
+    "runtime-main.js": "/Voting-App-Solidity/static/js/runtime-main.0d2131b0.js",
+    "runtime-main.js.map": "/Voting-App-Solidity/static/js/runtime-main.0d2131b0.js.map",
+    "static/css/2.5f10bdda.chunk.css": "/Voting-App-Solidity/static/css/2.5f10bdda.chunk.css",
+    "static/js/2.f84bfe3f.chunk.js": "/Voting-App-Solidity/static/js/2.f84bfe3f.chunk.js",
+    "static/js/2.f84bfe3f.chunk.js.map": "/Voting-App-Solidity/static/js/2.f84bfe3f.chunk.js.map",
+    "index.html": "/Voting-App-Solidity/index.html",
+    "precache-manifest.4427a4741d2fe33472a07090d686614e.js": "/Voting-App-Solidity/precache-manifest.4427a4741d2fe33472a07090d686614e.js",
+    "service-worker.js": "/Voting-App-Solidity/service-worker.js",
+    "static/css/2.5f10bdda.chunk.css.map": "/Voting-App-Solidity/static/css/2.5f10bdda.chunk.css.map",
+    "static/css/main.4ca1eb6d.chunk.css.map": "/Voting-App-Solidity/static/css/main.4ca1eb6d.chunk.css.map"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.0d2131b0.js",
+    "static/css/2.5f10bdda.chunk.css",
+    "static/js/2.f84bfe3f.chunk.js",
+    "static/css/main.4ca1eb6d.chunk.css",
+    "static/js/main.95880bf4.chunk.js"
+  ]
+}
