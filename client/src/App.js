@@ -2,13 +2,16 @@ import React, { useState, useEffect } from "react";
 import { Table } from 'react-bootstrap';
 import Web3 from 'web3';
 import ElectionContract from "./contracts/Election.json";
+import Navbar from './Navbar';
 
 import "./App.css";
+
 
 const App = () => {
   const [, updateState] = React.useState();
   const forceUpdate = React.useCallback(() => updateState({}), []);
   const [accountAddress, setAccountAddress] = useState("");
+  const [account, setAccount] = useState(null)
   const [candidatesCount, setCandidatesCount] = useState(0);
   const [candidatesList, setCandidatesList] = useState([]);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
@@ -122,6 +125,7 @@ const App = () => {
       return check;
   }
 
+
   useEffect(() => {
     console.log("INSIDE USEEFFECT::::::::::::::::::::::::::::::::::::::::::");
     loadBlockchainData();
@@ -133,17 +137,29 @@ const App = () => {
   },[candidatesCount]);
 
   return(
-    <div className="container">
+    <div className="con">
+        <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+        <a
+          className="navbar-brand col-sm-3 col-md-2 ms-3"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Online Voting Application
+        </a>
+
+          <small><a class="nav-link" style={{"color":"white"}}><span id="account"> {accountAddress}</span></a></small>
+
+      </nav>
+    <div className="container p-5">
       <div className="row electionContainerRow">
           <div className="col-lg-12 electionContainerColumn">
-            <h1 className="electionResultsHeader">Election Results</h1>       
+            <h1 className="electionResultsHeader"></h1>       
             {loading && 
-              <div id="loader">
-                <p className="text-center">Loading...</p>
-              </div>
-            }
-            <div className="candidatesTableContainer">
-              <Table bordered className="candidateListTable">
+             <div id="loader">
+            <p className="text-center" color="black">Loading...</p>
+          </div>}
+            <div bordered className="candidatesTableContainer card p-3 pb-0">
+              <Table className="candidateListTable">
                 <thead>
                   <tr>
                     <th>#</th>
@@ -186,11 +202,9 @@ const App = () => {
                 </form>
                </div>
             }   
-            <h3>Account Address:</h3>
-            
-            <p className="accountAddressClass">{ accountAddress }</p>
           </div>
       </div>
+    </div>
     </div>
   );
 }

@@ -20,9 +20,13 @@
 .App-link {
   color: #09d3ac;
 }
-
+.con{
+  background-color: #a4b1e6;
+  height: 50em;
+}
 .castVoteButtonContainer{
   display: flex;
+  color: white;
   justify-content: center;
   align-items: center;
   padding: 10px 5px;
@@ -51,25 +55,43 @@
 .candidateListTableRow{
   justify-content: space-around;
 }
+.candidateListTable{
+  padding: 10px 16px;
+  text-align: center;
+}
 
 .candidateListTable > thead > tr > th{
   padding: 10px 16px;
   text-align: center;
+  border-style: none;
+  color: white;
+  background-color: #5c636a;
+  border-style: none;
+
 }
 
 .candidateListTable > tbody > tr > td{
   padding: 10px 16px;
   text-align: center;
+  border-style: none;
+
 }
 
 .accountAddressClass{
   display: flex;
-  justify-content: center;
+  justify-content: right;
   align-items: center;
+  line-height: 6px;
   width: 100%;
+  color: white;
   font-weight: 600;
   word-break: break-all;
   white-space: normal;
+}
+.card {
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+  border-radius: 10px;
 }
 
 
@@ -96,3 +118,4 @@
     white-space: normal;
   }
   }
+
